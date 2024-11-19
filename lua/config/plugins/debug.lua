@@ -49,7 +49,25 @@ return {
   config = function()
     local dap = require 'dap'
     local dapui = require 'dapui'
-
+    dap.adapters.lldb = {
+      type = 'executable',
+      command = '/usr/bin/lldb', -- adjust as needed, must be absolute path
+      name = 'lldb',
+    }
+    dap.configurations.cpp = {
+      {
+        name = 'Launch',
+        type = 'lldb',
+        request = 'launch',
+        program = function()
+          return vim.fn.getcwd() .. '/target/debug/leetcod'
+        end,
+        cwd = '${workspaceFolder}',
+        stopOnEntry = true,
+        args = {},
+      },
+    }
+    dap.configurations.rust = dap.configurations.cpp
     require('mason-nvim-dap').setup {
       -- Makes a best effort to setup the various debuggers with
       -- reasonable debug configurations
